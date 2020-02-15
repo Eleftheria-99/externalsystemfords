@@ -1,0 +1,94 @@
+
+.parallax {
+	/* The image used */
+	background-image:
+		url("https://www.hua.gr/images/photos/IMG_6544.jpg");
+	/* Set a specific height */
+	min-height: 1000px;
+	/* Create the parallax scrolling effect */
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.menu {
+	background-color: white;
+	margin: 0 auto;
+	text-align: center;
+	align: center;
+	font-family: Helvetica;
+	min-height: 100vh;
+	position: relative;
+}
+
+.field {
+	background-color: #efeff5;
+	width: 900px;
+	height: 100%;
+	margin: 0 auto;
+	text-align: left;
+}
+
+.footer-wrapper {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: #0D8A6D;
+	color: white;
+	font-family: Helvetica;
+	line-height: 1.8;
+	/*width: 1100px;   */
+	/* Sets the width of the elements to be 1100 pixels. */
+	margin: 0 auto;
+	/* Shorthand for margin. Auto on left and right allows .wrap to be centered in the browser */
+}
+
+.single-footer {
+	width: 100%;
+	float: left;
+	/*text-align:justify;*/
+	text-align: left;
+	background-color: #0D8A6D;
+	color: white;
+	font-family: Helvetica;
+	font-size: 12px;
+}
+
+.image {
+	content: url("https://www.hua.gr/images/photos/IMG_6544.jpg");
+	width: 950px;
+	height: 500px;
+	opacity: 100%;
+	align:center;
+}
+
+.body-wrapper {
+	margin: 0 auto;
+	/* Shorthand for margin. Auto on left and right allows .wrap to be centered in the browser */
+}
+
+
+/* Left and right column */
+.column-left {
+	margin-top: 50px; /*na apexei apo panw toso */
+	float: left;
+	width: 25%;
+}
+
+.column-right {
+	margin-top: 50px; /*na apexei apo panw toso */
+	float: right;
+	text-align: center;
+	width: 25%;
+}
+/* Middle column */
+.column-middle {
+	margin-top: 50px;
+	display: inline-block;
+	width: 50%;
+	/* text-align: justify; */
+	/* text-align: justify and the following few lines of codes inclusive allows my navigation elements to have equal spaces within between them no matter how many elements there are.*/
+}
+

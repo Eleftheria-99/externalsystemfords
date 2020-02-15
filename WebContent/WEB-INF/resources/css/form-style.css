@@ -1,0 +1,64 @@
+.field {
+	background-color: #efeff5;
+	width: 600px;
+	height: 100%;
+	margin: 0 auto;
+	text-align: left;
+	font-family: Helvetica
+}
+
+.center {
+	margin: 0 auto;
+	text-align: center;
+	font-family: Helvetica;
+}
+
+.submit input {
+	width: auto;
+	padding: 9px 15px;
+	background: #efeff5;
+	border: 0;
+	font-size: 14px;
+	color: black;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	font-family: Helvetica;
+}
+
+.textarea {
+	padding: 3px;
+	border: solid 1.3px #E5E5E5;
+	outline: 0;
+	font: normal 16px/100% Verdana, Tahoma, sans-serif;
+	width: 200px;
+	background: #FFFFFF;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+	-moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+	-webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 8px;
+}
+
+.footer-wrapper {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: #0D8A6D;
+	color: white;
+	font-family: Helvetica;
+	line-height: 1.8;
+	/*width: 1100px;   */
+	/* Sets the width of the elements to be 1100 pixels. */
+	margin: 0 auto;
+	/* Shorthand for margin. Auto on left and right allows .wrap to be centered in the browser */
+}
+
+.single-footer {
+	width: 100%;
+	float: left;
+	/*text-align:justify;*/
+	text-align: left;
+	background-color: #0D8A6D;
+	color: white;
+	font-family: Helvetica;
+	font-size: 12px;
+}
