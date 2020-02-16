@@ -9,13 +9,7 @@ import javax.persistence.Table;
 @Table(name = "SUBMFORM_OIK")
 public class SubmittedForm_Oik {
 
-
-//	@Column(name = "ID")
-//	@GeneratedValue(strategy=GenerationType.IDENTITY)   //autoincrement 
-//	private int id;
-	
-	
-	@Id
+    @Id
 //	@OneToOne(cascade=CascadeType.ALL)                                       //annotation for foreign key  in users.java
 	@Column(name = "USERNAME")
 	private String username;
@@ -70,6 +64,14 @@ public class SubmittedForm_Oik {
 		PhoneNumber = phoneNumber;
 	}
 
+	public SubmittedForm_Oik(String email, int phoneNumber,String placeOfResidence, String department) {
+		super();
+		Email = email;
+		PhoneNumber = phoneNumber;
+		PlaceOfResidence = placeOfResidence;
+		Department = department;
+	}
+	
 	public SubmittedForm_Oik(String username, String fname, String lname, String email, int phoneNumber,
 			String placeOfResidence, String placeOfStudying, String department, int yearOfAttendance,
 			String familyStatus, int siblingsStudying, String annualIncome, int unemployedParents) {

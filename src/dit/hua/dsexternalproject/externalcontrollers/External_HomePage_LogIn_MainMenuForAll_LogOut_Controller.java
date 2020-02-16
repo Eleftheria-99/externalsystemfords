@@ -26,7 +26,15 @@ import dit.hua.dsexternalproject.entities.*;
 
 @Controller
 public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
-	String username_from_form =null;
+	private String username_from_form =null;
+	private String password_from_form = null;
+	private Response response = null;
+	private String json = null;
+	private String host = "http://localhost:8083/DistributedSystems/api/";
+	private String url_for_post_request =null;
+	private String string_response_from_okhttp_request = null;
+	private String url_for_get_request = null;
+	private Users returned_user = null;
 	
 	// The singleton HTTP client.
 	protected OkHttpClient client = null; 
@@ -49,92 +57,31 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 	@RequestMapping(value = "/login/main-menu-for-all", method = RequestMethod.POST)
 	public String showMainMenuForAll(HttpServletRequest request, Model model, HttpSession session,Authentication auth) {
 		System.out.println("ready to show: main menu for all users page");
-		Response response = null;
 		client = new OkHttpClient();
 		objectMapper = new ObjectMapper();
 		
-		String password_from_form= request.getParameter("password");
-		String username_from_form= request.getParameter("username");
+		//get the username and password from the login form
+		password_from_form = request.getParameter("password");
+		username_from_form= request.getParameter("username");
+		//create new object with the username from the form
 		Users user_username = new Users(username_from_form, null); // department = null
 
-		String json = null;
+		//POST OKHTTP REQUEST
+		url_for_post_request = host+"login/main-menu-for-all";
 		
-//		String plainClientCredentials=username+":"+password_from_form;
-//		String base64ClientCredentials = new String(Base64.encodeBase64(plainClientCredentials.getBytes()));
-//		 
-//		HttpHeaders headers = getHeaders();
-//		headers.add("Authorization", "Basic " + base64ClientCredentials);
-		try {
-			json = objectMapper.writeValueAsString(user_username);
-			System.out.println("EXTERNAL /login/main-menu-for-all  json: " + json);
-
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String post_url = "http://localhost:8083/DistributedSystems/api/login/main-menu-for-all";
-		// post ok http request
-		 RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-		Request post_okhttp_request = new Request.Builder().url(post_url)
-				.addHeader("Authorization", Credentials.basic(username_from_form, password_from_form)) 
-				.post(body)
-				.build();
-
-		String string_response = null;
-		try {
-			response = client.newCall(post_okhttp_request).execute();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			string_response = response.body().string();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	    System.out.println( "string_response: " + string_response);
+		string_response_from_okhttp_request = okhttp_post_request(url_for_post_request,  user_username);  //the method returns a string which contains a json 
+	    System.out.println( "string_response: " +  string_response_from_okhttp_request );
 		
 		
 		//GET OKHTTP REQUEST
-		//username = request.getParameter("username");
-		Request okhttp_request = new Request.Builder()
-				.url("http://localhost:8083/DistributedSystems/api/login/main-menu-for-all")
-				//.get(responsebod)            //requestbody
-				.build();
-		
-		try {
-			response = client.newCall(okhttp_request).execute();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//String string_response =response.body().toString();                                 /// = auth.getName();
-		String responseData =  null;
-		
-		try {
-			responseData = response.body().string();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-	    System.out.println( "onResponse: " + responseData);
-	    Gson gson = new Gson(); 
-	    Users returned_user = new Users();
-	    try {
-		    returned_user = gson.fromJson(responseData, Users.class);
-	    } catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	    url_for_get_request = host+"login/main-menu-for-all";
+	   
+	    returned_user = new Users();
+	    returned_user = okhttp_get_request(url_for_get_request);  //returns object type of user that contains the username and the department of the user
 		//model.addAttribute("message","This is the response"+ returned_user.toString() );
-		model.addAttribute("message", "This is the student with name: "+ returned_user.getUsername()+ " and studies in the department :"+ returned_user.getDepartment());
+		model.addAttribute("message", "This is the student with name: "+ username_from_form+ " and studies in the department :"+ returned_user.getDepartment());
 		session.setAttribute("username", username_from_form);
-		session.setAttribute("department",returned_user.getDepartment());
-		
+		session.setAttribute("department",returned_user.getDepartment());  //String department = student_service.findDepartment(username);	
 		try {
 			response.body().close();
 		} catch (IOException e) {
@@ -142,12 +89,10 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 			e.printStackTrace();
 		}
 
-		//String department = student_service.findDepartment(username);	
 		return "main-menu-for-all";
 	}
 
-	//log out   http://localhost/DistributedSystems
-		@RequestMapping(value = "/just-logged-out", method = RequestMethod.GET)
+		@RequestMapping(value = "/just-logged-out", method = RequestMethod.GET) //log out 
 		public String logout(HttpSession session, Model model) {
 			session.removeAttribute("username");
 			model.addAttribute("log_out_message", "You have just logged out!");
@@ -155,23 +100,78 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 		}
 		
 		
-		protected String doPostRequest(String url, String json)  {
-			RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-			Request okhttp_request = new Request.Builder().url(url).post(body).build();
-			Response response = null;
-			String responxe_json = null;
+		protected String okhttp_post_request(String post_url, Users user_username) {
+			
+//			String plainClientCredentials=username+":"+password_from_form;
+//			String base64ClientCredentials = new String(Base64.encodeBase64(plainClientCredentials.getBytes()));
+//			 
+//			HttpHeaders headers = getHeaders();
+//			headers.add("Authorization", "Basic " + base64ClientCredentials);
 			try {
-				response = client.newCall(okhttp_request).execute();
+				json = objectMapper.writeValueAsString(user_username);
+				System.out.println("EXTERNAL /login/main-menu-for-all  json: " + json);
+
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+			// post ok http request
+			 RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
+			Request post_okhttp_request = new Request.Builder().url(post_url)
+					//.addHeader("Authorization", Credentials.basic(username_from_form, password_from_form)) 
+					.post(body)
+					.build();
+
+			String string_response = null;
+			try {
+				response = client.newCall(post_okhttp_request).execute();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
-				 responxe_json = response.body().string();
+				string_response = response.body().string();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return responxe_json;
+			
+			return  string_response;
 		}
+		
+		 protected Users okhttp_get_request(String url_for_get_request) { //returns object type of user that contains the username and the department of the user 
+				Request okhttp_request = new Request.Builder()
+						.url(url_for_get_request )
+						.build();
+				
+				try {
+					response = client.newCall(okhttp_request).execute();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				//String string_response =response.body().toString();                                 /// = auth.getName();
+				String responseData =  null;
+				
+				try {
+					responseData = response.body().string();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			    System.out.println( "onResponse: " + responseData);  //response data is a json 
+			    
+			    Gson gson = new Gson(); 
+			    returned_user = new Users();
+			    try {
+				    returned_user = gson.fromJson(responseData, Users.class);  //convert json to object type of Users
+			    } catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			    return  returned_user;
+			}
+		
 }

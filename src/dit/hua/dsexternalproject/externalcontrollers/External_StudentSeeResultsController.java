@@ -22,6 +22,10 @@ import dit.hua.dsexternalproject.entities.Users;
 @Controller
 public class External_StudentSeeResultsController {
 
+	private Response response = null;
+	private String host = "http://localhost:8083/DistributedSystems/api/";
+	private Final_Ranking_Oik returned_finalranking_form = null;
+	
 	// The singleton HTTP client.
 	protected OkHttpClient client = null;
 	ObjectMapper objectMapper = null;
@@ -29,37 +33,15 @@ public class External_StudentSeeResultsController {
 	@RequestMapping(value = "login/main-menu-for-all/student-menu/showResults", method = RequestMethod.GET)
 	protected String SeeResults(Model model, HttpSession session) {
 		System.out.println("ready to show: see results page for students");
-		Response response = null;
 		client = new OkHttpClient();
 
 		// username = request.getParameter("username");
-		Request okhttp_request = new Request.Builder()
-				.url("http://localhost:8083/DistributedSystems/api/login/main-menu-for-all/showResults").build();
-
-		try {
-			response = client.newCall(okhttp_request).execute();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// String string_response =response.body().toString(); /// = auth.getName();
-		String responseData = null;
-
-		try {
-			responseData = response.body().string();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-
-		System.out.println("SeeResults onResponse: " + responseData);
-		Gson gson = new Gson();
-		Final_Ranking_Oik returned_finalranking_form = gson.fromJson(responseData, Final_Ranking_Oik.class);
-
-		// model.addAttribute("message","This is thersponse"+
-		// returned_finalranking_form.toString() );
+		String url_for_get_request = host +"login/main-menu-for-all/showResults";
+		
+		returned_finalranking_form = new Final_Ranking_Oik();
+		returned_finalranking_form = okhttp_get_request_for_final_ranking(url_for_get_request) ;
+		
 		if (returned_finalranking_form.getFname() == "not-found") {
-
 			model.addAttribute("Points", "You were not in the Final Ranking list!");
 		} else {
 			model.addAttribute("Points", "Points");
@@ -78,5 +60,42 @@ public class External_StudentSeeResultsController {
 		}
 		return "st-results";
 	}
+	
+	
+	protected Final_Ranking_Oik okhttp_get_request_for_final_ranking(String url_for_get_request) {
+		Request okhttp_request = new Request.Builder()
+				.url(url_for_get_request)
+				.build();
+	
+		try {
+			response = client.newCall(okhttp_request).execute();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// String string_response =response.body().toString(); /// = auth.getName();
+		String responseData = null;
+	
+		try {
+			responseData = response.body().string();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+		System.out.println("SeeResults onResponse: " + responseData);
+		
+		Gson gson = new Gson();
+		returned_finalranking_form = new Final_Ranking_Oik();
+		
+		try {
+			returned_finalranking_form  = gson.fromJson(responseData, Final_Ranking_Oik.class);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return returned_finalranking_form ;
+	}
+	
 
 }
