@@ -8,8 +8,15 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "SUBMFORM_OIK")
 public class SubmittedForm_Oik {
+
+
+//	@Column(name = "ID")
+//	@GeneratedValue(strategy=GenerationType.IDENTITY)   //autoincrement 
+//	private int id;
+	
 	
 	@Id
+//	@OneToOne(cascade=CascadeType.ALL)                                       //annotation for foreign key  in users.java
 	@Column(name = "USERNAME")
 	private String username;
 	
@@ -53,22 +60,23 @@ public class SubmittedForm_Oik {
 	public SubmittedForm_Oik() {
 		super();
 	}
-	
-	public SubmittedForm_Oik(String username, String email, int phoneNumber, String placeOfResidence, String department) {
-		super();
-		this.username = username;
-		Email = email;
-		PhoneNumber = phoneNumber;
-		PlaceOfResidence = placeOfResidence;
-		Department = department;
-	}
-	
+
+
 	public SubmittedForm_Oik(String fname, String lname, String email, int phoneNumber) {
 		super();
 		Fname = fname;
 		Lname = lname;
 		Email = email;
 		PhoneNumber = phoneNumber;
+	}
+	
+	public SubmittedForm_Oik(String username,String email, int phoneNumber,String placeofresidence,String department) {
+		super();
+		this.username=username;
+		Email = email;
+		PhoneNumber = phoneNumber;
+		PlaceOfResidence = placeofresidence;
+		Department = department;
 	}
 
 
@@ -242,12 +250,15 @@ public class SubmittedForm_Oik {
 
 	@Override
 	public String toString() {
-		return "Informatics [ Fname=" + Fname + ", Lname=" + Lname + ", Email=" + Email + ", PhoneNumber="
-				+ PhoneNumber + ", PlaceOfResidence=" + PlaceOfResidence + ", PlaceOfStudying=" + PlaceOfStudying
-				+ ", Department=" + Department + ", YearOfAttendance=" + YearOfAttendance + ", FamilyStatus="
-				+ FamilyStatus + ", SiblingsStudying=" + SiblingsStudying + ", AnnualIncome=" + AnnualIncome
-				+ ", UnemployedParents=" + UnemployedParents + "]";
-	}	
+		return "SubmittedForm_Oik [username=" + username + ", Fname=" + Fname + ", Lname=" + Lname + ", Email=" + Email
+				+ ", PhoneNumber=" + PhoneNumber + ", PlaceOfResidence=" + PlaceOfResidence + ", PlaceOfStudying="
+				+ PlaceOfStudying + ", Department=" + Department + ", YearOfAttendance=" + YearOfAttendance
+				+ ", FamilyStatus=" + FamilyStatus + ", SiblingsStudying=" + SiblingsStudying + ", AnnualIncome="
+				+ AnnualIncome + ", UnemployedParents=" + UnemployedParents + "]";
+	}
+
+
+		
 	
 	
 	

@@ -25,7 +25,7 @@ public class External_StudentSeeResultsController {
 	private Response response = null;
 	private String host = "http://localhost:8081/DistributedSystems/api/";
 	private Final_Ranking_Oik returned_finalranking_form = null;
-	
+
 	// The singleton HTTP client.
 	protected OkHttpClient client = null;
 	ObjectMapper objectMapper = null;
@@ -40,28 +40,34 @@ public class External_StudentSeeResultsController {
 		
 		returned_finalranking_form = new Final_Ranking_Oik();
 		returned_finalranking_form = okhttp_get_request_for_final_ranking(url_for_get_request) ;
+		System.out.println("RESULTS: "+returned_finalranking_form.toString());
 		
 		if (returned_finalranking_form.getFname() == "not-found") {
 			model.addAttribute("Points", "You were not in the Final Ranking list!");
-		} else {
+		} else if(returned_finalranking_form.getFname() == null){
+			model.addAttribute("Points", "You were not in the Final Ranking list!");
+		}else {
+		
 			model.addAttribute("Points", "Points");
 			model.addAttribute("points", returned_finalranking_form.getPoints());
-			model.addAttribute("size", "40");
+			model.addAttribute("size", "/40");
 			model.addAttribute("Rank", "Rank");
 			model.addAttribute("rank", returned_finalranking_form.getId());
 		}
-		// session.setAttribute("department",returned_finalranking_form.get);
+	// session.setAttribute("department",returned_finalranking_form.get);
 
-		try {
-			response.body().close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "st-results";
+	try
+
+	{
+		response.body().close();
+	}catch(
+	IOException e)
+	{
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}return"st-results";
 	}
-	
-	
+
 	protected Final_Ranking_Oik okhttp_get_request_for_final_ranking(String url_for_get_request) {
 		Request okhttp_request = new Request.Builder()
 				.url(url_for_get_request)
@@ -96,6 +102,5 @@ public class External_StudentSeeResultsController {
 		}
 		return returned_finalranking_form ;
 	}
-	
 
 }

@@ -86,7 +86,8 @@ public class External_StudentController {
 				unemployedParents);
 
 		json = return_string_that_contains_json_from_object_PUT_REQUEST(form);
-		//json = return_string_that_contains_json_from_object(form); // the method returns a string that contains a json
+		// json = return_string_that_contains_json_from_object(form); // the method
+		// returns a string that contains a json
 
 		System.out.println("The json is : " + json);
 
@@ -96,20 +97,20 @@ public class External_StudentController {
 
 		postResponse = doPostRequest(url, json); // send the info to the server, in order the data to be submitted in
 													// the database
-	
+
 		System.out.println("The post response is : " + postResponse);
 
 		SubmittedForm_Oik newForm = new SubmittedForm_Oik();
-		
+
 		Gson gson = new Gson();
 		postResponse.trim();
 		newForm = gson.fromJson(postResponse, SubmittedForm_Oik.class);
-		if(newForm.getDepartment().equals("exists")) {
-			model.addAttribute("error","You have already submitted your form!");
-			department=(String)session.getAttribute("department");
+		if (newForm.getDepartment().equals("exists")) {
+			model.addAttribute("error", "You have already submitted your form!");
+			department = (String) session.getAttribute("department");
 			newForm.setDepartment(department);
 		}
-		System.out.println("NEW FORM AFTER GSON IS:  "+newForm.toString());
+		System.out.println("NEW FORM AFTER GSON IS:  " + newForm.toString());
 		// add them in the form , so that the user can see the submitted form
 		add_parameters_in_the_form_and_show_the_user_the_submitted_form(newForm, model);
 		return "show-submitted-form";
@@ -162,7 +163,11 @@ public class External_StudentController {
 													// changed data
 
 		System.out.println("The put response is : " + putResponse);
+		String notfound = "{\"error\":\"Sorry, you haven't submitted your form yet!\"}"; // MAKE IT JSON
 
+		if(putResponse.equals(notfound)) {
+			model.addAttribute("error","Sorry, you haven't submitted your form yet!");
+		}else {
 		SubmittedForm_Oik newForm = new SubmittedForm_Oik();
 		Gson gson = new Gson();
 		putResponse.trim();
@@ -170,12 +175,12 @@ public class External_StudentController {
 		newForm = gson.fromJson(putResponse, SubmittedForm_Oik.class);
 
 		add_parameters_in_the_form_and_show_the_user_the_submitted_form(newForm, model);
-
+		}
 		return "show-submitted-form";
 	}
 
 	protected String returnDep(HttpServletRequest request, Model model, HttpSession session, String url) {
-		
+
 		System.out.println(
 				"method returnDep is beginning,about to retrieve the department of the user found in db and sent from server to client ");
 		client = new OkHttpClient();
@@ -275,29 +280,31 @@ public class External_StudentController {
 		department = (String) session.getAttribute("department");
 	}
 
-	/*protected String return_string_that_contains_json_from_object(SubmittedForm_Oik form) {
-		// the method creates and returns a string that conatains all the parameters
-		// from the form that the user submitted
-
-		json = "{\"username\": \"" + form.getUsername() + "\"," + "\"Fname\": \"" + form.getFname() + "\","
-				+ "\"Lname\": \"" + form.getLname() + "\"," + "\"Email\": \"" + form.getEmail() + "\","
-				+ "\"PhoneNumber\": " + form.getPhoneNumber() + "," + "\"PlaceOfResidence\": \""
-				+ form.getPlaceOfResidence() + "\"," + "\"PlaceOfStudying\": \"" + form.getPlaceOfStudying() + "\","
-				+ "\"Department\": \"" + form.getDepartment() + "\"," + "\"YearOfAttendance\": "
-				+ form.getYearOfAttendance() + "," + "\"FamilyStatus\": \"" + form.getFamilyStatus() + "\","
-				+ "\"SiblingsStudying\": " + form.getSiblingsStudying() + "," + "\"AnnualIncome\": \""
-				+ form.getAnnualIncome() + "\"," + "\"UnemployedParents\": " + form.getUnemployedParents()
-
-				+ "}";
-
-		// try {
-		// json = objectMapper.writeValueAsString(form);
-		// } catch (JsonProcessingException e1) {
-		// // TODO Auto-generated catch block
-		// e1.printStackTrace();
-		// }
-		return json;
-	}*/
+	/*
+	 * protected String
+	 * return_string_that_contains_json_from_object(SubmittedForm_Oik form) { // the
+	 * method creates and returns a string that conatains all the parameters // from
+	 * the form that the user submitted
+	 * 
+	 * json = "{\"username\": \"" + form.getUsername() + "\"," + "\"Fname\": \"" +
+	 * form.getFname() + "\"," + "\"Lname\": \"" + form.getLname() + "\"," +
+	 * "\"Email\": \"" + form.getEmail() + "\"," + "\"PhoneNumber\": " +
+	 * form.getPhoneNumber() + "," + "\"PlaceOfResidence\": \"" +
+	 * form.getPlaceOfResidence() + "\"," + "\"PlaceOfStudying\": \"" +
+	 * form.getPlaceOfStudying() + "\"," + "\"Department\": \"" +
+	 * form.getDepartment() + "\"," + "\"YearOfAttendance\": " +
+	 * form.getYearOfAttendance() + "," + "\"FamilyStatus\": \"" +
+	 * form.getFamilyStatus() + "\"," + "\"SiblingsStudying\": " +
+	 * form.getSiblingsStudying() + "," + "\"AnnualIncome\": \"" +
+	 * form.getAnnualIncome() + "\"," + "\"UnemployedParents\": " +
+	 * form.getUnemployedParents()
+	 * 
+	 * + "}";
+	 * 
+	 * // try { // json = objectMapper.writeValueAsString(form); // } catch
+	 * (JsonProcessingException e1) { // // TODO Auto-generated catch block //
+	 * e1.printStackTrace(); // } return json; }
+	 */
 
 	protected String doPostRequest(String url, String json) { // send to the server whatever the user has written in the
 																// form

@@ -12,11 +12,21 @@
 
 </head>
 <body class="menu">
-	<pre>
+<pre>
 	                          
 	                                                                                                                  <a href="/DSExternal/just-logged-out">Logout</a>
 	</pre>
-
+	<sec:authorize access="isAuthenticated()">
+		<div class="ui segment">
+		<pre>
+	                     	                                                                                                                  <a href="/DistributedSystems/just-logged-out">Logout</a>
+	</pre>
+			User:
+			<sec:authentication property="principal.username" />
+			, Role:
+			<sec:authentication property="principal.authorities" />
+		</div>
+	</sec:authorize>
 	<h3>Here you can see your points and rank if your form has been
 		processed and accepted!</h3>
 	<br/> <br/> <br/>

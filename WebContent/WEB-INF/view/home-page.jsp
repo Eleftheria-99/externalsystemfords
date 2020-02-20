@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 
 <!-- body
 	text-align: justify;   text-align: justify and the following few lines of codes inclusive allows my navigation elements to have equal spaces within between them no matter how many elements there are
@@ -14,6 +14,18 @@
 body {
 	min-height: 100vh;
 	position: relative;
+}
+
+.parallax {
+	/* The image used */
+	background-image: url("https://www.hua.gr/images/photos/IMG_6544.jpg");
+	/* Set a specific height */
+	min-height: 1000px;
+	/* Create the parallax scrolling effect */
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 * {
@@ -65,72 +77,52 @@ body {
 	opacity: 100%;
 	vertical-align: right;
 }
-€‹.line1 {
-	color: #888888;
-}
-
-.line2 {
-	color: #888888;
-}
-
-.line3 {
-	color: #888888;
-}
+€‹
 </style>
 
 <title>Home Page</title>
 </head>
 <body>
-
-	<div class="body-wrapper">
-		<div class="column-left">
-			<ul>
-				<li><a>Announcements</a></li>
-				<li>Events</li>
-				<li>Lectures</li>
-				<li>Workshops</li>
-				<li>Photos</li>
-			</ul>
-		</div>
-
-
-		<div class="column-middle">
-			<div class="login">
-				You can <a href="/DSExternal/login/"> login </a> here.
+	<div class="parallax"></div>
+	<div style="height: 100vh;">
+		<div class="body-wrapper">
+			<div class="column-left">
+				<ul>
+					<li><a>Announcements</a></li>
+					<li>Events</li>
+					<li>Lectures</li>
+					<li>Workshops</li>
+					<li>Photos</li>
+				</ul>
 			</div>
 
-			<br />
-			<h3>General information about the university</h3>
-			Harokopio University of Athens is a public university dedicated to
-			promoting research and learning in a small, well focused set of
-			intellectual areas. The university, situated in the centre of Athens
-			and close to the Unesco World Heritage Centre of the Acropolis,
-			originates from an educational institution that was first established
-			in 1929 and gained the status of University in 1990. It takes its
-			name from the national benefactor Panagis Harokopos. The Universityâ€™s
-			excellent campus facilities houses four academic departments, the
-			central administration, the library, the IT centre and student
-			advisory services. Harokopio University of Athens is located close to
-			many important cultural sites of interest such as the Acropolis
-			Museum, Thissio,Panathenaic Stadium (Kallimarmaron), Keramikos and
-			the Benaki Museum. <br />
-			<div class="image"></div>
-		</div>
 
-		<div class="column-right">
-			<div class="column-right-title">LATEST NEWS</div>
+			<div class="column-middle">
+				<div class="login">
+					You can <a href="/DSExternal/login/"> login </a> here.
+				</div>
 
-			<ul class="ul-column-right">
-				<li>26.09.2019 Info Day Welcome Erasmus students</li>
-				<li class="line1"><hr></li>
-				<li>Applications for International Master Program (MSc):
-					«Sustainable Tourism Development: Cultural Heritage, Environment,
-					Society»</li>
-				<li class="line2"><hr></li>
-				<li>17th Blood Donation</li>
-				<li class="line3"><hr></li>
-				<li>Study In Greece</li>
-			</ul>
+				<br />
+				<h3>General information about the university</h3>
+				Harokopio University of Athens is a public university dedicated to
+				promoting research and learning in a small, well focused set of
+				intellectual areas. The university, situated in the centre of Athens
+				and close to the Unesco World Heritage Centre of the Acropolis,
+				originates from an educational institution that was first
+				established in 1929 and gained the status of University in 1990. It
+				takes its name from the national benefactor Panagis Harokopos. The
+				Universityâ€™s excellent campus facilities houses four academic
+				departments, the central administration, the library, the IT centre
+				and student advisory services. Harokopio University of Athens is
+				located close to many important cultural sites of interest such as
+				the Acropolis Museum, Thissio,Panathenaic Stadium (Kallimarmaron),
+				Keramikos and the Benaki Museum. <br />
+				<div class="image"></div>
+			</div>
 
+			<div class="column-right">
+				Latest News <br />
+
+			</div>
 		</div>
 	</div>

@@ -21,7 +21,9 @@ header {
 	width: 100%;
 }
 
+
 .wrap {
+	
 	width: 1152;
 	/* Sets the width of the elements to be 1152 pixels. */
 	margin: 0 auto;
