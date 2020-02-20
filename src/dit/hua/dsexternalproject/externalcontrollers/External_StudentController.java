@@ -21,7 +21,7 @@ import dit.hua.dsexternalproject.entities.Users;
 @Controller
 public class External_StudentController {
 
-	//parameters of the form 
+	// parameters of the form
 	private String username = null;
 	private String fname = null;
 	private String lname = null;
@@ -45,25 +45,25 @@ public class External_StudentController {
 	protected ObjectMapper objectMapper = null;
 
 	protected Response response = null;
-	private String host = "http://localhost:8083/DistributedSystems/api/";
+	private String host = "http://localhost:8081/DistributedSystems/api/";
 	protected String postResponse = null;
 	protected String json = null;
-	
-	//for when the user decides to chnage some the data form  
+
+	// for when the user decides to chnage some the data form
 	protected String changed_email = null;
 	protected String changed_phone_number = null;
 	protected int int_changed_phoneNumber = 0;
 	protected String changed_place_of_residence = null;
 	protected String department_for_changed_data_form = null;
 	protected String putResponse = null;
-	
+
 	@RequestMapping(value = "login/main-menu-for-all/student-menu/showForm", method = RequestMethod.GET)
 	protected String fillForm(HttpServletRequest request, Model model, HttpSession session) {
 
-		String url = host+"login/main-menu-for-all/showForm";
+		String url = host + "login/main-menu-for-all/showForm";
 		String department_sent_from_server = returnDep(request, model, session, url);
-		
-		model.addAttribute("department",  department_sent_from_server);
+
+		model.addAttribute("department", department_sent_from_server);
 
 		try {
 			response.body().close();
@@ -74,41 +74,54 @@ public class External_StudentController {
 		return "st-form";
 	}
 
-	@RequestMapping(value = "login/main-menu-for-all/student-menu/showForm/StudentForm", method = RequestMethod.GET)
+	@RequestMapping(value = "login/main-menu-for-all/student-menu/showForm/StudentForm", method = RequestMethod.POST)
 	protected String showSubmittedForm(HttpServletRequest request, Model model, HttpSession session) {
 		client = new OkHttpClient();
 		objectMapper = new ObjectMapper();
-		
-		get_all_the_parameters_from_the_form_and_session(request, model,session);
-		
-		SubmittedForm_Oik form = new SubmittedForm_Oik(username, fname, lname, email, phoneNumber, placeOfResidence, placeOfStudying,
-				department,int_year_of_attendance, familyStatus, siblingsStudying, annualIncome, unemployedParents);
-	
-				
-		json = return_string_that_contains_json_from_object(form); //the method returns a string that contains a json 
-		
-		System.out.println("The json is : " + json);
-		 
-		  //POST OKHTTP REQUEST   -- send the object to the url of the rest controller to save them into the database
-		String url = host+"login/main-menu-for-all/showForm/StudentForm";
 
-		postResponse = doPostRequest(url, json); //send the info to the server, in order the data to be submitted in the database 
+		get_all_the_parameters_from_the_form_and_session(request, model, session);
+
+		SubmittedForm_Oik form = new SubmittedForm_Oik(username, fname, lname, email, phoneNumber, placeOfResidence,
+				placeOfStudying, department, int_year_of_attendance, familyStatus, siblingsStudying, annualIncome,
+				unemployedParents);
+
+		json = return_string_that_contains_json_from_object_PUT_REQUEST(form);
+		//json = return_string_that_contains_json_from_object(form); // the method returns a string that contains a json
+
+		System.out.println("The json is : " + json);
+
+		// POST OKHTTP REQUEST -- send the object to the url of the rest controller to
+		// save them into the database
+		String url = host + "login/main-menu-for-all/showForm/StudentForm";
+
+		postResponse = doPostRequest(url, json); // send the info to the server, in order the data to be submitted in
+													// the database
+	
+		System.out.println("The post response is : " + postResponse);
+
+		SubmittedForm_Oik newForm = new SubmittedForm_Oik();
 		
-        System.out.println("The post response is : " + postResponse);
-        
-        //add them in the form , so that the user can see the submitted form
-        add_parameters_in_the_form_and_show_the_user_the_submitted_form(form, model);
+		Gson gson = new Gson();
+		postResponse.trim();
+		newForm = gson.fromJson(postResponse, SubmittedForm_Oik.class);
+		if(newForm.getDepartment().equals("exists")) {
+			model.addAttribute("error","You have already submitted your form!");
+			department=(String)session.getAttribute("department");
+			newForm.setDepartment(department);
+		}
+		System.out.println("NEW FORM AFTER GSON IS:  "+newForm.toString());
+		// add them in the form , so that the user can see the submitted form
+		add_parameters_in_the_form_and_show_the_user_the_submitted_form(newForm, model);
 		return "show-submitted-form";
 	}
-
 
 	@RequestMapping(value = "login/main-menu-for-all/student-menu/change-data", method = RequestMethod.GET)
 	protected String ChangePersonalData(HttpServletRequest request, Model model, HttpSession session) {
 
-		String url = host+"login/main-menu-for-all/change-data";
-        String department_sent_from_server = returnDep(request, model, session, url);
-		
-		model.addAttribute("department",  department_sent_from_server);
+		String url = host + "login/main-menu-for-all/change-data";
+		String department_sent_from_server = returnDep(request, model, session, url);
+
+		model.addAttribute("department", department_sent_from_server);
 
 		try {
 			response.body().close();
@@ -116,56 +129,57 @@ public class External_StudentController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "st-change";  //returns the form that needs to be written by the student, having his/ her department
+		return "st-change"; // returns the form that needs to be written by the student, having his/ her
+							// department
 	}
-	
 
 	@RequestMapping(value = "login/main-menu-for-all/student-menu/change-data/newForm", method = RequestMethod.GET)
-	protected String ChangedForm(HttpServletRequest request, Model model,HttpSession session) {
-    //get the parameters from the form, send them to the server with put okhttp request, and add them to the model, so that the user can see the form with the changed data that was submitted 
+	protected String ChangedForm(HttpServletRequest request, Model model, HttpSession session) {
+		// get the parameters from the form, send them to the server with put okhttp
+		// request, and add them to the model, so that the user can see the form with
+		// the changed data that was submitted
 		client = new OkHttpClient();
 		objectMapper = new ObjectMapper();
-		
-		get_parameters_from_the_changed_data_form(request); //get the parameters from the form with the changed data 
-			
-		String url = host+"login/main-menu-for-all/showForm";
-		department_for_changed_data_form =  returnDep(request, model, session, url); //get the department of the user 
 
-		//convert object to string that contains a json 
-		SubmittedForm_Oik form = new SubmittedForm_Oik(changed_email, int_changed_phoneNumber, changed_place_of_residence,
-				department_for_changed_data_form);
-			
-		json = return_string_that_contains_json_from_object_PUT_REQUEST(form); //the method returns a string that contains a json 
+		get_parameters_from_the_changed_data_form(request); // get the parameters from the form with the changed data
+
+		String url = host + "login/main-menu-for-all/showForm";
+		department_for_changed_data_form = returnDep(request, model, session, url); // get the department of the user
+
+		username = (String) session.getAttribute("username");
+		// convert object to string that contains a json
+		SubmittedForm_Oik form = new SubmittedForm_Oik(username, changed_email, int_changed_phoneNumber,
+				changed_place_of_residence, department_for_changed_data_form);
+
+		json = return_string_that_contains_json_from_object_PUT_REQUEST(form); // the method returns a string that
+																				// contains a json
 		System.out.println("DSExternal : ChangedForm - The json is : " + json);
-		
-		//PUT REQUEST --send to the server the data that the user wants to change in his/her submitted form in the db  
-		String put_url = host+"login/main-menu-for-all/change-data/newForm";
-		putResponse = doPutRequest(put_url, json) ;//send to the server whatever the user has written in the form for changed data  
-		
-		System.out.println("The put response is : " + putResponse);
-		
-		
-		//GET REQUEST IN ORDERTHE SERVER TO SEND TO THE CLIENT THE OTHER INFO OF THE FORM 
-		String get_url = host+"login/main-menu-for-all/showForm/"+username;
-		
-		//MISSING
-		
-		
-		//add the chnaged data into the form, so that the user can see the changed data that were submitted 
-		model.addAttribute("email", changed_email );
-		model.addAttribute("phone", changed_phone_number );
-		model.addAttribute("pofresidence", changed_place_of_residence);
-		model.addAttribute("dep", department_for_changed_data_form);
-		
-		 return "show-submitted-form";
-	}
-	
-	
 
-	protected String returnDep(HttpServletRequest request, Model model, HttpSession session, String url) { //the method executes a get okhttp request and returns the department of the user 
-		System.out.println("method returnDep is beginning,about to retrieve the department of the user found in db and sent from server to client " );
+		// PUT REQUEST --send to the server the data that the user wants to change in
+		// his/her submitted form in the db
+		String put_url = host + "login/main-menu-for-all/change-data/newForm";
+		putResponse = doPutRequest(put_url, json);// send to the server whatever the user has written in the form for
+													// changed data
+
+		System.out.println("The put response is : " + putResponse);
+
+		SubmittedForm_Oik newForm = new SubmittedForm_Oik();
+		Gson gson = new Gson();
+		putResponse.trim();
+
+		newForm = gson.fromJson(putResponse, SubmittedForm_Oik.class);
+
+		add_parameters_in_the_form_and_show_the_user_the_submitted_form(newForm, model);
+
+		return "show-submitted-form";
+	}
+
+	protected String returnDep(HttpServletRequest request, Model model, HttpSession session, String url) {
+		
+		System.out.println(
+				"method returnDep is beginning,about to retrieve the department of the user found in db and sent from server to client ");
 		client = new OkHttpClient();
-		//GET OKHTTP REQUEST
+		// GET OKHTTP REQUEST
 		Request okhttp_request = new Request.Builder().url(url).build();
 		try {
 			response = client.newCall(okhttp_request).execute();
@@ -187,18 +201,18 @@ public class External_StudentController {
 		Gson gson = new Gson();
 		Users returned_user = new Users();
 		try {
-		returned_user = gson.fromJson(responseData, Users.class);
-		}catch(Exception e) {
+			returned_user = gson.fromJson(responseData, Users.class);
+		} catch (Exception e) {
 			e.getStackTrace();
 		}
-		//model.addAttribute("department", returned_user.getDepartment().toString());
+		// model.addAttribute("department", returned_user.getDepartment().toString());
 		return returned_user.getDepartment();
 
 	}
 
 	protected void get_all_the_parameters_from_the_form_and_session(HttpServletRequest request, Model model,
 			HttpSession session) {
-		//gets all the parameters from the form that the user submitted 
+		// gets all the parameters from the form that the user submitted
 		fname = request.getParameter("fname");
 		lname = request.getParameter("lname");
 		email = request.getParameter("email");
@@ -260,9 +274,10 @@ public class External_StudentController {
 
 		department = (String) session.getAttribute("department");
 	}
-	
-	protected String return_string_that_contains_json_from_object(SubmittedForm_Oik form) {
-		//the  method creates and returns a string that conatains all the parameters from the form that the user submitted 
+
+	/*protected String return_string_that_contains_json_from_object(SubmittedForm_Oik form) {
+		// the method creates and returns a string that conatains all the parameters
+		// from the form that the user submitted
 
 		json = "{\"username\": \"" + form.getUsername() + "\"," + "\"Fname\": \"" + form.getFname() + "\","
 				+ "\"Lname\": \"" + form.getLname() + "\"," + "\"Email\": \"" + form.getEmail() + "\","
@@ -271,25 +286,23 @@ public class External_StudentController {
 				+ "\"Department\": \"" + form.getDepartment() + "\"," + "\"YearOfAttendance\": "
 				+ form.getYearOfAttendance() + "," + "\"FamilyStatus\": \"" + form.getFamilyStatus() + "\","
 				+ "\"SiblingsStudying\": " + form.getSiblingsStudying() + "," + "\"AnnualIncome\": \""
-				+ form.getAnnualIncome() + "\"," + "\"UnemployedParents\": " + form.getUnemployedParents() + ","
+				+ form.getAnnualIncome() + "\"," + "\"UnemployedParents\": " + form.getUnemployedParents()
 
 				+ "}";
 
-			//	try {
-			//		json = objectMapper.writeValueAsString(form);
-			//	} catch (JsonProcessingException e1) {
-			//		// TODO Auto-generated catch block
-			//		e1.printStackTrace();
-			//	}
+		// try {
+		// json = objectMapper.writeValueAsString(form);
+		// } catch (JsonProcessingException e1) {
+		// // TODO Auto-generated catch block
+		// e1.printStackTrace();
+		// }
 		return json;
-	}
+	}*/
 
-	protected String doPostRequest(String url, String json)  { //send to the server whatever the user has written in the form 
+	protected String doPostRequest(String url, String json) { // send to the server whatever the user has written in the
+																// form
 		RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-		Request okhttp_request = new Request.Builder()
-				.url(url)
-				.post(body)
-				.build();
+		Request okhttp_request = new Request.Builder().url(url).post(body).build();
 
 		try {
 			response = client.newCall(okhttp_request).execute();
@@ -305,57 +318,60 @@ public class External_StudentController {
 		}
 		return postResponse;
 	}
-	
 
-    protected void add_parameters_in_the_form_and_show_the_user_the_submitted_form(SubmittedForm_Oik form, Model model){  //add them in the form , so that the user can see the submitted form
-        model.addAttribute("fname", form.getFname());
-        model.addAttribute("lname", form.getLname());
-        model.addAttribute("email", form.getEmail());
-        model.addAttribute("phone", form.getPhoneNumber());
-        model.addAttribute("pofresidence", form.getPlaceOfResidence() );
-        model.addAttribute("pofstudying", form.getPlaceOfStudying() );
-        model.addAttribute("dep", form.getDepartment() );
-        model.addAttribute("year", form.getYearOfAttendance() );
-        model.addAttribute("family", form.getFamilyStatus() );
-        model.addAttribute("siblings", form.getSiblingsStudying());
-        model.addAttribute("income", form.getAnnualIncome() );
-        model.addAttribute("parents", form.getUnemployedParents() );
-    }
-    
-    protected void get_parameters_from_the_changed_data_form(HttpServletRequest request) { //get the parameters from the form with the changed data 
-		changed_email = request.getParameter("email");
-		changed_phone_number = request.getParameter("phonenumber");
-
-		if (string_phone_number == null || string_phone_number.length() == 0) {
-			int_changed_phoneNumber = -1; // in case of error
-		} else {
-			try {
-				int_changed_phoneNumber = Integer.parseInt(string_phone_number);
-			} catch (Exception e) {
-				e.getStackTrace();
-			}
-		}
-		changed_place_of_residence = request.getParameter("placeofliving");  //place of residence
+	protected void add_parameters_in_the_form_and_show_the_user_the_submitted_form(SubmittedForm_Oik form,
+			Model model) { // add them in the form , so that the user can see the submitted form
+		model.addAttribute("fname", form.getFname());
+		model.addAttribute("lname", form.getLname());
+		model.addAttribute("email", form.getEmail());
+		model.addAttribute("phone", form.getPhoneNumber());
+		model.addAttribute("pofresidence", form.getPlaceOfResidence());
+		model.addAttribute("pofstudying", form.getPlaceOfStudying());
+		model.addAttribute("dep", form.getDepartment());
+		model.addAttribute("year", form.getYearOfAttendance());
+		model.addAttribute("family", form.getFamilyStatus());
+		model.addAttribute("siblings", form.getSiblingsStudying());
+		model.addAttribute("income", form.getAnnualIncome());
+		model.addAttribute("parents", form.getUnemployedParents());
 	}
-    
-    protected String return_string_that_contains_json_from_object_PUT_REQUEST(SubmittedForm_Oik form) {
-		//the  method creates and returns a string that contains all the parameters from the form with the changed data that the user submitted 
 
-				try {
-					json = objectMapper.writeValueAsString(form);
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+	protected void get_parameters_from_the_changed_data_form(HttpServletRequest request) { // get the parameters from
+																							// the form with the changed
+																							// data
+		changed_email = request.getParameter("email");
+		int_changed_phoneNumber = Integer.parseInt(request.getParameter("phonenumber"));
+		System.out.println("PHONE BEFORE: " + changed_phone_number);
+//		if (string_phone_number == null || string_phone_number.length() == 0) {
+//			int_changed_phoneNumber = -1; // in case of error
+//		} else {
+//			try {
+//				int_changed_phoneNumber = Integer.parseInt(string_phone_number);
+//				System.out.println("PHONE in try: "+int_changed_phoneNumber);
+//
+//			} catch (Exception e) {
+//				e.getStackTrace();
+//			}
+//		}
+		changed_place_of_residence = request.getParameter("placeofliving"); // place of residence
+	}
+
+	protected String return_string_that_contains_json_from_object_PUT_REQUEST(SubmittedForm_Oik form) {
+		// the method creates and returns a string that contains all the parameters from
+		// the form with the changed data that the user submitted
+
+		try {
+			json = objectMapper.writeValueAsString(form);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		return json;
 	}
-    
-    protected String doPutRequest(String url, String json)  { //send to the server whatever the user has written in the form for changed data  
+
+	protected String doPutRequest(String url, String json) { // send to the server whatever the user has written in the
+																// form for changed data
 		RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-		Request okhttp_request = new Request.Builder()
-				.url(url)
-				.put(body)
-				.build();
+		Request okhttp_request = new Request.Builder().url(url).put(body).build();
 
 		try {
 			response = client.newCall(okhttp_request).execute();

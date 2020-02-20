@@ -28,11 +28,15 @@ body {
 	<div class="body-wrapper">
 		<div class="menu" id="options">
 			${message } <br> ${username} <br> <br> <br> <br>
+	<pre>
+	                          
+	                                                                                                                  <a href="/DSExternal/just-logged-out">Logout</a>
+	</pre>
+			
+			
 			<br /> <br /> <br /> <br /> <br />
 		<b>	<h2>Hello student! Here you can do the following options:</h2></b>
 			<br /> <br /> <br />
-
-			
 
 				<br /> Choose one of the following options! <br /> <br /> <br />
 				<fieldset class="field">

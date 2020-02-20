@@ -56,6 +56,12 @@ public class Users {
 	@JoinColumn(name = "USERNAME") // field of table: SubmittedForm_Plir
 	private SubmittedForm_Plir submittedForm_Plir; //SubmittedForm_Plir submittedForm_Plir;         //List<SubmittedForm_Plir> submittedForm_Plir;
 
+	
+	
+	// TABEL:Final_Ranking_Plir: USERNAME : FK -> TABLE:USERS:USERNAME
+		
+	
+	
 
 	public Users() { // public empty default constructor
 

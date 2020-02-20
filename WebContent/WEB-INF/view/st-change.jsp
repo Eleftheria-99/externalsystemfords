@@ -8,18 +8,12 @@
 <style><%@include file="/WEB-INF/resources/css/form-style.css"%></style>
 <title>Change Personal Data</title>
 </head>
-<body>
-	<sec:authorize access="isAuthenticated()">
-		<div class="ui segment">
-		<pre>
-	                     	                                                                                                                  <a href="/DistributedSystems/just-logged-out">Logout</a>
+<body>	
+	<pre>
+	                          
+	                                                                                                                  <a href="/DSExternal/just-logged-out">Logout</a>
 	</pre>
-			User:
-			<sec:authentication property="principal.username" />
-			, Role:
-			<sec:authentication property="principal.authorities" />
-		</div>
-	</sec:authorize>
+
 	<div  class="center" >
 	<h3>Here you can change some of your personal data, so we can be
 		able to communicate with you!</h3>

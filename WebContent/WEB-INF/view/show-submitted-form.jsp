@@ -16,23 +16,12 @@ body {
 </head>
 <body>
 	Hello ${username}
-
-
-	<h3>
-		<sec:authorize access="isAuthenticated()">
-			<div class="ui segment">
-				<pre>
-	                     	                                                                                                                  <a
-						href="/DSExternal/just-logged-out">Logout</a>
-	</pre>
-				User:
-				<sec:authentication property="principal.username" />
-				, Role:
-				<sec:authentication property="principal.authorities" />
-			</div>
-		</sec:authorize>
-	</h3>
 	<br /> ${error}
+	<pre>
+	                          
+	                                                                                                                  <a href="/DSExternal/just-logged-out">Logout</a>
+	</pre>
+	
 	<br /> This is your form, if you want to change some of your data you
 	can here:
 	<a

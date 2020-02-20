@@ -12,6 +12,10 @@
 <title>Student form</title>
 </head>
 <body>
+	<pre>
+	                          
+	                                                                                                                  <a href="/DSExternal/just-logged-out">Logout</a>
+	</pre>
 	<div class="center">
 
 		${errormessage} <br /> <br />

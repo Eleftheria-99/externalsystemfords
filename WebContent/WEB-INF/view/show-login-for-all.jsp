@@ -19,7 +19,10 @@ body {
 	<h3>
 		<b>Log In Page</b>
 	</h3>
-
+<pre>
+	                          
+	                                                                                                                  <a href="/DSExternal/">Go back to the home page</a>
+	</pre>
 	<br />
 	<br /> Please log in !
 	<br />
@@ -29,8 +32,9 @@ body {
 	<br />
 	<c:if test="${param.error != null}">
 		<i>Sorry! Invalid username/password!</i>
-	</c:if>       
-	<!--  <div id=" login for all in order to see the menu">-->
+	</c:if>     
+	  
+ <div id=" login for all in order to see the menu">
 		<form:form  action="/DSExternal/login/main-menu-for-all"   method="POST"> 
 		
 	Username : <input name="username" id="username" type="text" required />
@@ -39,7 +43,7 @@ body {
 			<br />
 			<input type="submit" value="Login" />
 		</form:form>
-	<!--  </div>  -->
+ </div> 
 
 
 	<br />

@@ -65,7 +65,17 @@ body {
 	opacity: 100%;
 	vertical-align: right;
 }
-â€‹
+€‹.line1 {
+	color: #888888;
+}
+
+.line2 {
+	color: #888888;
+}
+
+.line3 {
+	color: #888888;
+}
 </style>
 
 <title>Home Page</title>
@@ -107,6 +117,20 @@ body {
 			<div class="image"></div>
 		</div>
 
-		<div class="column-right">Latest News <br/>
-		<div class="map"></div></div>
+		<div class="column-right">
+			<div class="column-right-title">LATEST NEWS</div>
+
+			<ul class="ul-column-right">
+				<li>26.09.2019 Info Day Welcome Erasmus students</li>
+				<li class="line1"><hr></li>
+				<li>Applications for International Master Program (MSc):
+					«Sustainable Tourism Development: Cultural Heritage, Environment,
+					Society»</li>
+				<li class="line2"><hr></li>
+				<li>17th Blood Donation</li>
+				<li class="line3"><hr></li>
+				<li>Study In Greece</li>
+			</ul>
+
+		</div>
 	</div>

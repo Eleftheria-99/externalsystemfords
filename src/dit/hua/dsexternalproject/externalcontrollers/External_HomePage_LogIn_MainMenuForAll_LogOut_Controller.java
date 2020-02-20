@@ -49,14 +49,14 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String showLogInForAll() {	
-		System.out.println("ready to show: log in page");	
+		System.out.println("EXTERNAL: ready to show: log in page");	
 		return "show-login-for-all";
 	}
 
 	
 	@RequestMapping(value = "/login/main-menu-for-all", method = RequestMethod.POST)
 	public String showMainMenuForAll(HttpServletRequest request, Model model, HttpSession session,Authentication auth) {
-		System.out.println("ready to show: main menu for all users page");
+		System.out.println("EXTERNAL : ready to show: main menu for all users page");
 		client = new OkHttpClient();
 		objectMapper = new ObjectMapper();
 		
@@ -70,7 +70,7 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 		url_for_post_request = host+"login/main-menu-for-all";
 		
 		string_response_from_okhttp_request = okhttp_post_request(url_for_post_request,  user_username);  //the method returns a string which contains a json 
-	    System.out.println( "string_response: " +  string_response_from_okhttp_request );
+	    System.out.println( "EXTERNAL : string_response from ok http post request: " +  string_response_from_okhttp_request );
 		
 		
 		//GET OKHTTP REQUEST
@@ -85,7 +85,6 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 		try {
 			response.body().close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -94,25 +93,35 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 
 		@RequestMapping(value = "/just-logged-out", method = RequestMethod.GET) //log out 
 		public String logout(HttpSession session, Model model) {
+			
+			
+			//POST REQUEST to let the server know that the user has logged out 
+			url_for_post_request = host+"just-logged-out";
+			
+			Users user_username = new Users(username_from_form, null); // department = null
+			
+			okhttp_post_request(url_for_post_request, user_username);
+			
 			session.removeAttribute("username");
 			model.addAttribute("log_out_message", "You have just logged out!");
+			
+			return "redirect:/login";
+		}
+		
+		@RequestMapping(value = "/login/error", method = RequestMethod.GET) //log in error 
+		public String show_login_error(HttpSession session, Model model) {
+			model.addAttribute("error", "Sorry! Invalid username/password!");
 			return "redirect:/login";
 		}
 		
 		
 		protected String okhttp_post_request(String post_url, Users user_username) {
 			
-//			String plainClientCredentials=username+":"+password_from_form;
-//			String base64ClientCredentials = new String(Base64.encodeBase64(plainClientCredentials.getBytes()));
-//			 
-//			HttpHeaders headers = getHeaders();
-//			headers.add("Authorization", "Basic " + base64ClientCredentials);
 			try {
 				json = objectMapper.writeValueAsString(user_username);
-				System.out.println("EXTERNAL /login/main-menu-for-all  json: " + json);
+				System.out.println("EXTERNAL /login/main-menu-for-all -- about to send json: " + json);
 
 			} catch (Exception e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 
@@ -127,13 +136,11 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 			try {
 				response = client.newCall(post_okhttp_request).execute();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			try {
 				string_response = response.body().string();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -161,17 +168,21 @@ public class External_HomePage_LogIn_MainMenuForAll_LogOut_Controller {
 					e1.printStackTrace();
 				}
 				
-			    System.out.println( "onResponse: " + responseData);  //response data is a json 
+			    System.out.println( "EXTERNAL: In ok_http_get_method: onResponse from server : " + responseData);  //response data is a json 
 			    
 			    Gson gson = new Gson(); 
 			    returned_user = new Users();
 			    try {
 				    returned_user = gson.fromJson(responseData, Users.class);  //convert json to object type of Users
+				    return  returned_user;
+				
 			    } catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					returned_user = new Users("error", "error");
+					return returned_user ;
 				}
-			    return  returned_user;
+			
 			}
 		
 }

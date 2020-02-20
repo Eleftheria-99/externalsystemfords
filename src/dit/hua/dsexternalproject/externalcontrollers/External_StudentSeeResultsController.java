@@ -23,7 +23,7 @@ import dit.hua.dsexternalproject.entities.Users;
 public class External_StudentSeeResultsController {
 
 	private Response response = null;
-	private String host = "http://localhost:8083/DistributedSystems/api/";
+	private String host = "http://localhost:8081/DistributedSystems/api/";
 	private Final_Ranking_Oik returned_finalranking_form = null;
 	
 	// The singleton HTTP client.
